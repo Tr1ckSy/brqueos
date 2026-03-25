@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useAuth } from "@/lib/auth-context"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import { HeroSection } from "@/components/dashboard/hero-section"
@@ -16,6 +17,7 @@ import { ReportsSection } from "@/components/dashboard/sections/reports-section"
 import { LevelsSection } from "@/components/dashboard/sections/levels-section"
 import { ProfileSection } from "@/components/dashboard/sections/profile-section"
 import { PlansSection } from "@/components/dashboard/sections/plans-section"
+import { Loader2 } from "lucide-react"
 import { 
   ShoppingBag, 
   TrendingUp, 
@@ -35,9 +37,24 @@ const sectionTitles: Record<string, string> = {
 }
 
 export default function DashboardPage() {
+  const { user, isLoading } = useAuth()
   const [activeSection, setActiveSection] = useState("dashboard")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const userName = user?.name?.split(" ")[0] || "Usuario"
 
   const renderSection = () => {
     switch (activeSection) {
@@ -46,7 +63,7 @@ export default function DashboardPage() {
           <div className="max-w-7xl mx-auto">
             {/* Hero Section */}
             <HeroSection
-              username="Marco"
+              username={userName}
               levelName="Aprendiz"
               nextLevelName="Intermediario"
               progress={65}

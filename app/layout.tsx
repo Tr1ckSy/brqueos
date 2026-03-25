@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Syne } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AuthProvider } from '@/lib/auth-context'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({ 
@@ -52,7 +54,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark">
       <body className={`${jakarta.variable} ${syne.variable} font-sans antialiased`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+        <Toaster />
         <Analytics />
       </body>
     </html>
