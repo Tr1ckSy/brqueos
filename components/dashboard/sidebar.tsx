@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -74,9 +75,20 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeSection = "dashboard", onSectionChange, collapsed = false, onCollapsedChange }: SidebarProps) {
+  const { user, logout } = useAuth()
+  
   const handleNavClick = (href: string) => {
     const section = href.replace("#", "")
     onSectionChange?.(section)
+  }
+
+  const getUserInitials = () => {
+    if (!user?.name) return "US"
+    const names = user.name.split(" ")
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[1][0]}`.toUpperCase()
+    }
+    return names[0].substring(0, 2).toUpperCase()
   }
 
   return (
@@ -162,7 +174,10 @@ export function Sidebar({ activeSection = "dashboard", onSectionChange, collapse
         ))}
 
         {/* Logout */}
-        <button className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-destructive hover:bg-destructive/10 transition-colors mb-2">
+        <button 
+          onClick={logout}
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-destructive hover:bg-destructive/10 transition-colors mb-2"
+        >
           <LogOut size={16} />
           {!collapsed && <span>Sair</span>}
         </button>
@@ -177,13 +192,13 @@ export function Sidebar({ activeSection = "dashboard", onSectionChange, collapse
           <Avatar className="h-8 w-8 border-2 border-primary/30">
             <AvatarImage src="" />
             <AvatarFallback className="bg-gradient-to-br from-primary to-orange-600 text-white text-xs font-bold">
-              MS
+              {getUserInitials()}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold truncate">Marco Silva</p>
-              <p className="text-[10px] text-muted-foreground">Ver meu perfil →</p>
+              <p className="text-xs font-semibold truncate">{user?.name || "Usuario"}</p>
+              <p className="text-[10px] text-muted-foreground">Ver meu perfil</p>
             </div>
           )}
         </div>

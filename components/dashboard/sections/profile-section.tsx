@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { AvatarUpload } from "@/components/ui/avatar-upload"
 import {
   User,
   Mail,
@@ -32,6 +33,14 @@ export function ProfileSection() {
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [pushNotifications, setPushNotifications] = useState(true)
   const [weeklyReport, setWeeklyReport] = useState(false)
+  const [avatarImage, setAvatarImage] = useState<string | null>(null)
+
+  const handleAvatarChange = (file: File | null, preview: string | null) => {
+    setAvatarImage(preview)
+    if (file) {
+      console.log("[v0] Foto de perfil atualizada:", file.name)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -40,17 +49,12 @@ export function ProfileSection() {
         <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-primary/10 blur-3xl" />
         <CardContent className="p-6 relative">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            <div className="relative">
-              <Avatar className="h-24 w-24 border-4 border-primary/30">
-                <AvatarImage src="" />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-orange-600 text-white text-2xl font-bold">
-                  MS
-                </AvatarFallback>
-              </Avatar>
-              <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors">
-                <Camera size={14} />
-              </button>
-            </div>
+            <AvatarUpload
+              currentImage={avatarImage || undefined}
+              fallback="MS"
+              size="xl"
+              onImageChange={handleAvatarChange}
+            />
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h2 className="font-heading text-2xl font-extrabold">Marco Silva</h2>
