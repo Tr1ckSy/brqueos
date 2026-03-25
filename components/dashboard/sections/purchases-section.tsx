@@ -49,6 +49,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts"
+import { PurchaseModal, type PurchaseFormData } from "@/components/dashboard/modals/purchase-modal"
 
 interface Purchase {
   id: string
@@ -146,6 +147,12 @@ const statusConfig = {
 
 export function PurchasesSection() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+
+  const handleNewPurchase = (data: PurchaseFormData) => {
+    console.log("[v0] Nova compra registrada:", data)
+    // Aqui seria integrado com a API
+  }
 
   const stats = {
     monthlyPurchases: 197900,
@@ -292,7 +299,11 @@ export function PurchasesSection() {
                 <FileText size={14} className="mr-2" />
                 Relatório
               </Button>
-              <Button size="sm" className="flex-1 md:flex-none bg-primary hover:bg-primary/90">
+              <Button 
+                size="sm" 
+                className="flex-1 md:flex-none bg-primary hover:bg-primary/90"
+                onClick={() => setShowPurchaseModal(true)}
+              >
                 <Plus size={14} className="mr-2" />
                 Nova Compra
               </Button>
@@ -394,6 +405,13 @@ export function PurchasesSection() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Modal de Nova Compra */}
+      <PurchaseModal 
+        open={showPurchaseModal} 
+        onOpenChange={setShowPurchaseModal}
+        onSubmit={handleNewPurchase}
+      />
     </div>
   )
 }

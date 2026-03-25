@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth-context"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import { HeroSection } from "@/components/dashboard/hero-section"
@@ -35,9 +37,38 @@ const sectionTitles: Record<string, string> = {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
+  const { user, isLoading, isAuthenticated, logout } = useAuth()
   const [activeSection, setActiveSection] = useState("dashboard")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login")
+    }
+  }, [isLoading, isAuthenticated, router])
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center animate-pulse">
+            <span className="text-white text-lg font-bold">B</span>
+          </div>
+          <p className="text-sm text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Not authenticated
+  if (!isAuthenticated) {
+    return null
+  }
+
+  const userName = user?.name?.split(" ")[0] || "Usuario"
 
   const renderSection = () => {
     switch (activeSection) {
@@ -46,7 +77,7 @@ export default function DashboardPage() {
           <div className="max-w-7xl mx-auto">
             {/* Hero Section */}
             <HeroSection
-              username="Marco"
+              username={userName}
               levelName="Aprendiz"
               nextLevelName="Intermediario"
               progress={65}
