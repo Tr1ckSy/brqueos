@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server"
 import * as bcrypt from "bcryptjs"
 import * as jwt from "jsonwebtoken"
 
+const JWT_SECRET = process.env.JWT_SECRET || "briqueos-jwt-secret-key-2024"
+
+// Gera hash síncrono para usuarios de teste
+const adminPasswordHash = bcrypt.hashSync("admin123", 10)
+
 // In-memory users storage (should be shared with login route in production)
 const users: Array<{
   id: number
@@ -14,14 +19,12 @@ const users: Array<{
   {
     id: 1,
     email: "admin@briqueos.com",
-    password: "$2a$10$Qjm5yDhGKjvqkXGpLGzPpOzJxSvNPv1N6VvJHxlG6nGTwVxq0gUGK",
+    password: adminPasswordHash,
     name: "Administrador",
     role: "admin",
     createdAt: new Date(),
   },
 ]
-
-const JWT_SECRET = process.env.JWT_SECRET || "briqueos-jwt-secret-key-2024"
 
 export async function POST(request: NextRequest) {
   try {
