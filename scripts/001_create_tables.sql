@@ -82,6 +82,27 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.purchases ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sales ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "profiles_select_own" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_insert_own" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_update_own" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_delete_own" ON public.profiles;
+
+DROP POLICY IF EXISTS "products_select_own" ON public.products;
+DROP POLICY IF EXISTS "products_insert_own" ON public.products;
+DROP POLICY IF EXISTS "products_update_own" ON public.products;
+DROP POLICY IF EXISTS "products_delete_own" ON public.products;
+
+DROP POLICY IF EXISTS "purchases_select_own" ON public.purchases;
+DROP POLICY IF EXISTS "purchases_insert_own" ON public.purchases;
+DROP POLICY IF EXISTS "purchases_update_own" ON public.purchases;
+DROP POLICY IF EXISTS "purchases_delete_own" ON public.purchases;
+
+DROP POLICY IF EXISTS "sales_select_own" ON public.sales;
+DROP POLICY IF EXISTS "sales_insert_own" ON public.sales;
+DROP POLICY IF EXISTS "sales_update_own" ON public.sales;
+DROP POLICY IF EXISTS "sales_delete_own" ON public.sales;
+
 -- Profiles policies
 CREATE POLICY "profiles_select_own" ON public.profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "profiles_insert_own" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
